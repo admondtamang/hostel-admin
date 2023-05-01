@@ -3,11 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import api from '@particles/helper/api';
-import { Response } from '@particles/responseInterface/main';
 
-export const deleteBlogCategory = async (values: string) => {
+export const deleteSeoTemplate = async (value: string) => {
   try {
-    const { data } = await api.delete(`/blog-category/${values}`);
+    const { data } = await api.delete(`/seo-template/${value}`);
 
     return data as any;
   } catch (error: any) {
@@ -15,11 +14,10 @@ export const deleteBlogCategory = async (values: string) => {
   }
 };
 
-export const useMutationDeleteBlogCategory = () => {
+export const useMutationDeleteSeoTemplate = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: (values: string) => deleteBlogCategory(values),
+    mutationFn: (value: string) => deleteSeoTemplate(value),
     onSuccess: (data) => {
       toast.success(data.message, {
         position: 'top-right',
@@ -29,10 +27,10 @@ export const useMutationDeleteBlogCategory = () => {
         draggable: true,
         theme: 'light',
       });
-      queryClient.invalidateQueries({ queryKey: ['blog-category.list'] });
+      queryClient.invalidateQueries({ queryKey: ['seo.list'] });
     },
-    onError(error: AxiosError<Response<any>>, variables, context) {
-      toast.error(error.response?.data?.message || 'Failed to delete Category', {
+    onError(error: AxiosError) {
+      toast.error(error?.message || 'Failed to delete Category', {
         position: 'top-right',
         autoClose: 2000,
         closeOnClick: true,
@@ -44,4 +42,4 @@ export const useMutationDeleteBlogCategory = () => {
   });
 };
 
-export default useMutationDeleteBlogCategory;
+export default useMutationDeleteSeoTemplate;

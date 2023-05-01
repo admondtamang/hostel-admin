@@ -5,20 +5,18 @@ import { toast } from 'react-toastify';
 import api from '@particles/helper/api';
 import { useNavigate } from 'react-router-dom';
 
-export type IBlogCategory = {
-  name: string;
-  slug: string;
-  description: string;
+export type ISeoTemplate = {
+  heading: string;
+  url: string;
+  meta_description: string;
+  meta_title: string;
+  meta_keywords: string;
+  pageType: string;
 };
 
-type IProps = {
-  id: string | undefined;
-  values: IBlogCategory;
-};
-
-export const patchBlogCategory = async (id: string | undefined, values: IBlogCategory) => {
+export const postSeoTemplate = async (values: ISeoTemplate) => {
   try {
-    const { data } = await api.patch(`/blog-category/${id}`, values);
+    const { data } = await api.post(`/seo-template`, values);
 
     return data as any;
   } catch (error: any) {
@@ -26,11 +24,11 @@ export const patchBlogCategory = async (id: string | undefined, values: IBlogCat
   }
 };
 
-export const useMutationPatchBlogCategory = () => {
+export const useMutationPostSeo = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: ({ id, values }: IProps) => patchBlogCategory(id, values),
+    mutationFn: (values: ISeoTemplate) => postSeoTemplate(values),
     onSuccess: (data) => {
       toast.success(data.message, {
         position: 'top-right',
@@ -42,7 +40,7 @@ export const useMutationPatchBlogCategory = () => {
       });
       navigate(-1);
     },
-    onError(error: AxiosError) {
+    onError(error: AxiosError, variables, context) {
       toast.error(error?.message || 'Failed to create Category', {
         position: 'top-right',
         autoClose: 2000,
@@ -55,4 +53,4 @@ export const useMutationPatchBlogCategory = () => {
   });
 };
 
-export default useMutationPatchBlogCategory;
+export default useMutationPostSeo;

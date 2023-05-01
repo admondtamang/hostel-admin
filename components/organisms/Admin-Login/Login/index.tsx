@@ -55,11 +55,8 @@ const LoginForm: React.FC = () => {
       }
       saveToLocalStorage('role', result?.data?.data?.role);
       saveToLocalStorage('refreshToken', result?.data.data.refreshToken);
-      if (result?.data?.data?.role === 'superadmin' || result?.data?.data?.role === 'superadmin')
-        navigate('/dashboard/companies');
-      else {
-        navigate('/dashboard/blogs/overview');
-      }
+
+      navigate('/dashboard/');
     }
     if (error) {
       const errorToDisplay = (error?.response?.data as Response<IAdminLogin>)?.message;

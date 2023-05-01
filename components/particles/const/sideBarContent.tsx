@@ -10,58 +10,25 @@ export const sideBarContent: ISideBarContent[] = [
     icon: UsersIcon,
     link: '/dashboard/home/',
   },
-  {
-    title: 'Blogs',
-    icon: ChatIcon,
-    link: '/dashboard/blogs/overview/',
-    subContent: [
-      {
-        title: 'Overview',
-        link: '/dashboard/blogs/overview/',
-      },
-      {
-        title: 'Posts',
-        link: '/dashboard/blogs/posts/?content=published&pageNo=1',
-      },
-      {
-        title: 'Categories',
-        link: '/dashboard/blogs/categories/',
-      },
-      {
-        title: 'Media',
-        link: '/dashboard/blogs/media/',
-      },
-    ],
-  },
-  {
-    title: 'Users',
-    icon: UsersIcon,
-    link: '/dashboard/users/users-details',
-    subContent: [
-      {
-        title: 'Users Details',
-        link: '/dashboard/users/users-details',
-      },
-      // Temporarily removed!
-      // {
-      //   title: 'Roles and Permissions',
-      //   link: '/dashboard/users/roles-and-permissions/',
-      // },
-    ],
-  },
+  // {
+  //   title: 'Users',
+  //   icon: UsersIcon,
+  //   link: '/dashboard/users/users-details',
+  //   subContent: [
+  //     {
+  //       title: 'Users Details',
+  //       link: '/dashboard/users/users-details',
+  //     },
+  //     // Temporarily removed!
+  //     // {
+  //     //   title: 'Roles and Permissions',
+  //     //   link: '/dashboard/users/roles-and-permissions/',
+  //     // },
+  //   ],
+  // },
   {
     title: 'SEO',
     icon: DocumentIcon,
     link: '/dashboard/seo/',
-  },
-  {
-    title: 'Companies',
-    icon: OfficeBuildingIcon,
-    link: '/dashboard/companies/',
-  },
-  {
-    title: 'Candidates',
-    icon: UsersIcon,
-    link: '/dashboard/candidates/',
   },
 ];
