@@ -36,7 +36,7 @@ interface input {
  * @returns An object with three properties: uploadData, result, and error.
  */
 const useLoginHooks = () => {
-  const link = `${import.meta.env.VITE_BACKEND_HOST}/user/login`;
+  const link = `${import.meta.env.VITE_BACKEND_HOST}/admin/login`;
 
   const [result, setResult] = React.useState<AxiosResponse<Response<IAdminLogin>, input>>();
 
@@ -44,7 +44,7 @@ const useLoginHooks = () => {
 
   const uploadData = async (value: input, role: string) => {
     try {
-      const data = await axios.post<Response<IAdminLogin>>(link, { ...value, portal: role });
+      const data = await axios.post<Response<IAdminLogin>>(link, { ...value });
 
       setResult(data);
       setError(undefined);
