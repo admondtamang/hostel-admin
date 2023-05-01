@@ -12,6 +12,9 @@ export interface ISeoTemplate {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export const navigateContent = ['View All', 'Author', 'Admin'];
+
 export const pageType = [
   {
     value: 'Developers',

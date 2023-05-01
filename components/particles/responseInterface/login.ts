@@ -1,10 +1,17 @@
 export interface IAdminLogin {
-  metadata: Metadata2;
-  accessToken: string;
-  refreshToken: string;
-  role: string;
+  token: string;
+  user: User;
 }
 
-export interface Metadata2 {
-  statusCode: number;
+interface User {
+  id: number;
+  firstname: string;
+  lastname: string;
+  username?: any;
+  email: string;
+  isActive: boolean;
+  blocked: boolean;
+  preferedLanguage?: any;
+  createdAt: string;
+  updatedAt: string;
 }

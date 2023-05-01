@@ -13,149 +13,184 @@ import { pageType as pageTypeOption } from '../const';
 import { EButtonType } from '@atoms/buttons/button.types';
 import ReactSelect from '@atoms/react-select/ReactSelect';
 import BlogsNavigation from '@molecules/Blogs/BlogsNavigation';
-import useMutationPostSeo from '@particles/hooks/dashboard/seo/useMutationPostSeo';
+import useMutationPostStudent from '@particles/hooks/dashboard/student/useMutationPostStudent';
+import useFetchAll from '@particles/hooks/dashboard/all/useFetchAll';
 
 const AddNewSEO = () => {
-  const { mutate: postSeoTemplate } = useMutationPostSeo();
+  const { data: All } = useFetchAll();
+  const { mutate: postStudent } = useMutationPostStudent();
 
   const navigate = useNavigate();
 
+  const getLabelValue = (data: any, key: string) => {
+    if (!data) return [];
+    return data.map((row: any) => ({
+      label: row[key],
+      value: row.id,
+    }));
+  };
+
+  const roleOptions = getLabelValue(All?.role, 'name');
+  const provinceOptions = getLabelValue(All?.province, 'Province');
+  const institutionOptions = getLabelValue(All?.institution, 'institution_name');
+  const districtOptions = getLabelValue(All?.district, 'District_name');
+
   const formik = useFormik({
     initialValues: {
-      pageType: '',
-      heading: '%full_name%',
-      mainProfileURL: 'https://url_link.talentpoint.io/%full_name%',
-      pageMetaTitle: '%%%full_name%%% | %location% | %zip_code% | Talentpoint',
-      metaDescription:
-        '%%%full_name%%% get ready to access your remote talent in different %%%location%%% and also find the best networks of talent who are both efficient and robust.',
-      metaKeywords: ` %%%full_name%%%
-%%% location%%%
-%%%state_in%%%
-%%%zip_code%%%`,
+      confirmed: false,
+      blocked: true,
+      email: 'moqyp@mailinator.com',
+      username: 'dutenevewe',
+      password: 'Pa$$0rd!',
+      Full_Name: 'Hayfa',
+      Mobile: undefined,
+      dob: '2023-05-10',
+      role: 2,
+      province: 1,
+      institution: 1,
+      district: 1,
     },
     validationSchema: Yup.object({
-      heading: Yup.string().required('Heading is required!'),
-      pageType: Yup.string().required('Page Type is requierd!'),
-      mainProfileURL: Yup.string().required('Main Profile URL is required!'),
-      pageMetaTitle: Yup.string().max(180, 'Atmost 180 characters can be used!'),
-      metaDescription: Yup.string().max(180, 'Atmost 180 characters can be used!'),
-      metaKeywords: Yup.string().max(180, 'Atmost 180 characters can be used!'),
+      Full_Name: Yup.string().required('Full name is required!'),
+      email: Yup.string().email().required('Email is requierd!'),
+      password: Yup.string().required('Password is required!'),
+      Mobile: Yup.string().max(16, 'Atmost 16 number can be used!'),
+      dob: Yup.string(),
+      role: Yup.number().required(),
+      province: Yup.number().required(),
+      institution: Yup.number().required(),
+      district: Yup.number().required(),
     }),
     onSubmit: (values) => {
-      postSeoTemplate({
-        heading: values.heading,
-        pageType: values.pageType,
-        url: values.mainProfileURL,
-        meta_description: values.metaDescription,
-        meta_title: values.pageMetaTitle,
-        meta_keywords: values.metaKeywords,
-      });
+      postStudent(values);
     },
   });
 
   return (
     <main className="py-4 px-10">
       <BlogsNavigation content={AddNewSEOBreadCrums} />
-      <InnerPageHead heading={'SEO settings'} />
+      <InnerPageHead heading={'Student details'} />
       <form onSubmit={formik.handleSubmit} className="mt-10 max-w-[662px]">
-        <div className="flex flex-col gap-[6px] mb-6">
-          <label className="text-body3 text-neutral-900 opacity-70">Select a page type</label>
+        {/* <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Role</label>
           <ReactSelect
-            value={formik.values['pageType']}
-            onValueChange={(value) => formik.setFieldValue('pageType', value)}
-            onBlur={() => formik.setFieldTouched('pageType')}
-            options={pageTypeOption}
+            value={formik.values['role']}
+            onValueChange={(value) => formik.setFieldValue('role', value)}
+            onBlur={() => formik.setFieldTouched('role')}
+            options={roleOptions}
             downArrow={true}
             isSearchable={false}
-            errorToolTip={formik.touched['pageType']}
-            error={formik.touched['pageType'] ? (formik.errors['pageType'] as string) : undefined}
+            errorToolTip={formik.touched['role']}
+            error={formik.touched['role'] ? (formik.errors['role'] as string) : undefined}
           />
-        </div>
+        </div> */}
+
         <InputSection
-          label={'Heading'}
+          label={'Email'}
           labelClass="text-body3 text-neutral-900 opacity-70"
           containerClass="flex flex-col gap-[6px]"
-          value={formik.values['heading']}
+          value={formik.values['email']}
+          type="email"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          name="heading"
+          name="email"
         />
+
         <InputSection
-          label={'Main profile URL'}
+          label={'Username'}
           labelClass="text-body3 text-neutral-900 opacity-70"
           containerClass="flex flex-col gap-[6px] mt-8"
-          value={formik.values['mainProfileURL']}
+          value={formik.values['username']}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          name="mainProfileURL"
+          name="username"
         />
-        <div className="w-full border-b border-neutral-300 mt-8" />
-        <div className="mt-8 flex flex-col gap-[6px]">
-          <label className="text-body3 text-neutral-900 opacity-70">Page meta title</label>
-          <textarea
-            value={formik.values['pageMetaTitle']}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="min-h-[120px] resize-none border border-bullet rounded text-bodysmall text-neutral-900 px-4 py-[10px]"
-            name="pageMetaTitle"
-            maxLength={150}
+
+        <InputSection
+          label={'Full Name'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['Full_Name']}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="full_Name"
+        />
+
+        <InputSection
+          label={'Password'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['password']}
+          type="password"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="password"
+        />
+
+        <div className="w-full border-b border-neutral-300 my-8" />
+
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Province</label>
+          <ReactSelect
+            value={formik.values['province']}
+            onValueChange={(value) => formik.setFieldValue('province', value)}
+            onBlur={() => formik.setFieldTouched('province')}
+            options={provinceOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['province']}
+            error={formik.touched['province'] ? (formik.errors['province'] as string) : undefined}
           />
-          <div className="flex items-center justify-between">
-            <p className="text-caption text-neutral-800 opacity-70">
-              Page title helps to identify/indicate the subject of a webpage
-            </p>
-            <p className="text-caption text-neutral-800 opacity-70">
-              <span className={clsx(formik.errors['pageMetaTitle'] ? 'text-error' : 'text-neutral-900')}>
-                {formik.values['pageMetaTitle'].length}
-              </span>
-              /150 characters
-            </p>
-          </div>
         </div>
-        <div className="mt-8 flex flex-col gap-[6px]">
-          <label className="text-body3 text-neutral-900 opacity-70">Meta description</label>
-          <textarea
-            value={formik.values['metaDescription']}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="min-h-[120px] resize-none border border-bullet rounded text-bodysmall text-neutral-900 px-4 py-[10px]"
-            name="metaDescription"
-            maxLength={150}
+
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Institution</label>
+          <ReactSelect
+            value={formik.values['institution']}
+            onValueChange={(value) => formik.setFieldValue('institution', value)}
+            onBlur={() => formik.setFieldTouched('institution')}
+            options={institutionOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['institution']}
+            error={formik.touched['institution'] ? (formik.errors['institution'] as string) : undefined}
           />
-          <div className="flex items-center justify-between">
-            <p className="text-caption text-neutral-800 opacity-70">
-              Page title helps to identify/indicate the subject of a webpage
-            </p>
-            <p className="text-caption text-neutral-800 opacity-70">
-              <span className={clsx(formik.errors['metaDescription'] ? 'text-error' : 'text-neutral-900')}>
-                {formik.values['metaDescription'].length}
-              </span>
-              /150 characters
-            </p>
-          </div>
         </div>
-        <div className="mt-8 flex flex-col gap-[6px]">
-          <label className="text-body3 text-neutral-900 opacity-70">Meta keywords</label>
-          <textarea
-            value={formik.values['metaKeywords']}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="min-h-[120px] resize-none border border-bullet rounded text-bodysmall text-neutral-900 px-4 py-[10px]"
-            name="metaKeywords"
-            maxLength={150}
+
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a District</label>
+          <ReactSelect
+            value={formik.values['district']}
+            onValueChange={(value) => formik.setFieldValue('district', value)}
+            onBlur={() => formik.setFieldTouched('district')}
+            options={districtOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['district']}
+            error={formik.touched['district'] ? (formik.errors['district'] as string) : undefined}
           />
-          <div className="flex items-center justify-between">
-            <p className="text-caption text-neutral-800 opacity-70">
-              Meta keywords tells about the topic of the particular page
-            </p>
-            <p className="text-caption text-neutral-800 opacity-70">
-              <span className={clsx(formik.errors['metaKeywords'] ? 'text-error' : 'text-neutral-900')}>
-                {formik.values['metaKeywords'].length}
-              </span>
-              /150 characters
-            </p>
-          </div>
         </div>
+
+        <InputSection
+          label={'DOB'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['dob']}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="dob"
+        />
+
+        <InputSection
+          label={'Mobile'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['Mobile']}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="Mobile"
+        />
+
         <div className="flex gap-4 mt-10">
           <Button type="button" onClick={() => navigate(-1)} btnType={EButtonType.outline}>
             Cancel

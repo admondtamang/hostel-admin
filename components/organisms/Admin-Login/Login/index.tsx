@@ -48,13 +48,8 @@ const LoginForm: React.FC = () => {
       if (getFromLocalStorage('accessToken')) {
         removeFromLocalStorage('accessToken');
       }
-      saveToLocalStorage('accessToken', result.data.data.accessToken);
 
-      if (getFromLocalStorage('refreshToken')) {
-        removeFromLocalStorage('refreshToken');
-      }
-      saveToLocalStorage('role', result?.data?.data?.role);
-      saveToLocalStorage('refreshToken', result?.data.data.refreshToken);
+      saveToLocalStorage('accessToken', result.data.data?.token);
 
       navigate('/dashboard/');
     }

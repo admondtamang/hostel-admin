@@ -13,7 +13,7 @@ import toolTipsCSS from '@particles/css/toolTip.module.css';
 interface IReactSelect extends Props {
   label?: string;
   containerClassName?: string;
-  value: string[] | string;
+  value: string[] | string | number;
   onValueChange: (data: string[] | string) => void;
   labelClassName?: string;
   locationIcon?: boolean;
