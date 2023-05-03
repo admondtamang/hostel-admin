@@ -1,10 +1,10 @@
-export const AddNewSEOBreadCrums = [
+export const AddNewStudentBreadCrums = [
   {
-    title: 'SEO',
-    link: '/dashboard/seo/',
+    title: 'Students',
+    link: '/dashboard/students/',
   },
   {
-    title: 'SEO Settings',
-    link: '/dashboard/seo/add-new-seo/',
+    title: 'Add students',
+    link: '/dashboard/seo/add-student/',
   },
 ];

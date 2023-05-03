@@ -1,10 +1,10 @@
-export const AddNewSEOBreadCrums = (id: number | string) => [
+export const EditStudentBreadCrums = (id: number | string) => [
   {
-    title: 'SEO',
-    link: '/dashboard/seo/',
+    title: 'Students',
+    link: '/dashboard/student/',
   },
   {
-    title: 'SEO Settings',
-    link: `/dashboard/seo/${id}`,
+    title: 'Edit Student',
+    link: `/dashboard/student/${id}`,
   },
 ];

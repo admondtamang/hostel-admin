@@ -6,17 +6,16 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@atoms/buttons';
-import { AddNewSEOBreadCrums } from './const';
+import { AddNewStudentBreadCrums } from './const';
 import InputSection from '@molecules/inputSection';
 import InnerPageHead from '@molecules/InnerPageHead';
-import { pageType as pageTypeOption } from '../const';
 import { EButtonType } from '@atoms/buttons/button.types';
 import ReactSelect from '@atoms/react-select/ReactSelect';
 import BlogsNavigation from '@molecules/Blogs/BlogsNavigation';
-import useMutationPostStudent from '@particles/hooks/dashboard/student/useMutationPostStudent';
 import useFetchAll from '@particles/hooks/dashboard/all/useFetchAll';
+import useMutationPostStudent from '@particles/hooks/dashboard/student/useMutationPostStudent';
 
-const AddNewSEO = () => {
+const AddNewStudent = () => {
   const { data: All } = useFetchAll();
   const { mutate: postStudent } = useMutationPostStudent();
 
@@ -68,7 +67,7 @@ const AddNewSEO = () => {
 
   return (
     <main className="py-4 px-10">
-      <BlogsNavigation content={AddNewSEOBreadCrums} />
+      <BlogsNavigation content={AddNewStudentBreadCrums} />
       <InnerPageHead heading={'Add student details'} />
       <form onSubmit={formik.handleSubmit} className="mt-10 max-w-[662px]">
         {/* <div className="flex flex-col gap-[6px] mb-6">
@@ -94,6 +93,9 @@ const AddNewSEO = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           name="email"
+          status={formik.touched['email']}
+          error={formik.touched['email'] ? formik.errors['email'] : undefined}
+          bottomError={false}
         />
 
         <InputSection
@@ -104,6 +106,9 @@ const AddNewSEO = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           name="username"
+          status={formik.touched['username']}
+          error={formik.touched['username'] ? formik.errors['username'] : undefined}
+          bottomError={false}
         />
 
         <InputSection
@@ -113,7 +118,10 @@ const AddNewSEO = () => {
           value={formik.values['Full_Name']}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          name="full_Name"
+          name="Full_Name"
+          status={formik.touched['Full_Name']}
+          error={formik.touched['Full_Name'] ? formik.errors['Full_Name'] : undefined}
+          bottomError={false}
         />
 
         {/* <InputSection
@@ -177,6 +185,9 @@ const AddNewSEO = () => {
           containerClass="flex flex-col gap-[6px] mt-8"
           value={formik.values['dob']}
           type="date"
+          status={formik.touched['dob']}
+          error={formik.touched['dob'] ? formik.errors['dob'] : undefined}
+          bottomError={false}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           name="dob"
@@ -189,6 +200,9 @@ const AddNewSEO = () => {
           value={formik.values['Mobile']}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          status={formik.touched['Mobile']}
+          error={formik.touched['Mobile'] ? formik.errors['Mobile'] : undefined}
+          bottomError={false}
           name="Mobile"
         />
 
@@ -203,4 +217,4 @@ const AddNewSEO = () => {
   );
 };
 
-export default AddNewSEO;
+export default AddNewStudent;

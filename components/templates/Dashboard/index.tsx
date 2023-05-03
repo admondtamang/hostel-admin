@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ToastContainer } from 'react-toastify';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -7,11 +7,11 @@ import BodyLayout from '@organisms/Dashboard/Body-Layout';
 import NavigationSection from '@organisms/Dashboard/Navigation';
 
 import { sideBarContent } from '@particles/const/sideBarContent';
-import getFromLocalStorage from '@particles/helper/getFromLocal';
 
 const DashBoardTemplate: React.FC = () => {
   const location = useLocation();
   const [, , page, subPage] = location.pathname.split('/');
+  const [user, setUser] = useState<any>();
 
   return (
     <main className="min-h-screen bg-background-color">

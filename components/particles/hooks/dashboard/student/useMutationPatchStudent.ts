@@ -4,24 +4,16 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import api from '@particles/helper/api';
 import { useNavigate } from 'react-router-dom';
-
-export type ISeoTemplate = {
-  heading: string;
-  url: string;
-  meta_description: string;
-  meta_title: string;
-  meta_keywords: string;
-  pageType: string;
-};
+import { IStudentInput } from '@particles/responseInterface/student/student.interface';
 
 export type Iprops = {
   id: string;
-  values: ISeoTemplate;
+  values: IStudentInput;
 };
 
-export const patchSeoTemplate = async (id: string, values: ISeoTemplate) => {
+export const patchStudent = async (id: string, values: IStudentInput) => {
   try {
-    const { data } = await api.patch(`/seo-template/${id}`, values);
+    const { data } = await api.put(`/content-manager/collection-types/plugin::users-permissions.user/${id}`, values);
 
     return data as any;
   } catch (error: any) {
@@ -29,13 +21,13 @@ export const patchSeoTemplate = async (id: string, values: ISeoTemplate) => {
   }
 };
 
-export const useMutationPatchSeo = () => {
+export const useMutationPatchStudent = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: ({ id, values }: Iprops) => patchSeoTemplate(id, values),
+    mutationFn: ({ id, values }: Iprops) => patchStudent(id, values),
     onSuccess: (data) => {
-      toast.success(data.message, {
+      toast.success('Sucessfully updated', {
         position: 'top-right',
         autoClose: 2000,
         closeOnClick: true,
@@ -46,7 +38,7 @@ export const useMutationPatchSeo = () => {
       navigate(-1);
     },
     onError(error: AxiosError) {
-      toast.error(error?.message || 'Failed to create Category', {
+      toast.error(error?.message || 'Failed to create student', {
         position: 'top-right',
         autoClose: 2000,
         closeOnClick: true,
@@ -58,4 +50,4 @@ export const useMutationPatchSeo = () => {
   });
 };
 
-export default useMutationPatchSeo;
+export default useMutationPatchStudent;

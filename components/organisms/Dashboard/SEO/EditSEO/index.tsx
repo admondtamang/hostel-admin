@@ -3,162 +3,209 @@ import React from 'react';
 import clsx from 'clsx';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-
-import InnerPageHead from '@molecules/InnerPageHead';
-import BlogsNavigation from '@molecules/Blogs/BlogsNavigation';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Button from '@atoms/buttons';
-import { AddNewSEOBreadCrums } from './const';
+import { EditStudentBreadCrums } from './const';
 import InputSection from '@molecules/inputSection';
-import { pageType as pageTypeOption } from '../const';
+import InnerPageHead from '@molecules/InnerPageHead';
 import { EButtonType } from '@atoms/buttons/button.types';
-import { useNavigate, useParams } from 'react-router-dom';
 import ReactSelect from '@atoms/react-select/ReactSelect';
+import BlogsNavigation from '@molecules/Blogs/BlogsNavigation';
 
-import useFetchSingleSeo from '@particles/hooks/dashboard/seo/useFetchSingleSeo';
-import useMutationPatchSeo from '@particles/hooks/dashboard/seo/useMutationPatchSeo';
+import useFetchAll from '@particles/hooks/dashboard/all/useFetchAll';
+import useFetchSingleStudent from '@particles/hooks/dashboard/student/useFetchSingleStudent';
+import useMutationPatchStudent from '@particles/hooks/dashboard/student/useMutationPatchStudent';
 
-const EditSEO = () => {
+const EditNewStudent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  console.log(id);
 
-  const { data: blogCategory, isLoading, isError } = useFetchSingleSeo(id as string);
-  const { mutate: patchSeoTemplate } = useMutationPatchSeo();
+  const { data: student, isLoading, isError } = useFetchSingleStudent(id as string);
+  const { mutate: patchStudent } = useMutationPatchStudent();
+  const { data: All } = useFetchAll();
+
+  const getLabelValue = (data: any, key: string) => {
+    if (!data) return [];
+    return data.map((row: any) => ({
+      label: row[key],
+      value: row.id,
+    }));
+  };
+
+  const roleOptions = getLabelValue(All?.role, 'name');
+  const provinceOptions = getLabelValue(All?.province, 'Province');
+  const institutionOptions = getLabelValue(All?.institution, 'institution_name');
+  const districtOptions = getLabelValue(All?.district, 'District_name');
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      heading: blogCategory?.heading || '',
-      mainProfileURL: blogCategory?.url || '',
-      pageMetaTitle: blogCategory?.meta_title || '',
-      metaDescription: blogCategory?.meta_description || '',
-      metaKeywords: blogCategory?.meta_keywords || '',
-      pageType: blogCategory?.pageType || '',
+      confirmed: false,
+      blocked: true,
+      email: student?.email,
+      username: student?.username,
+      password: 'Pa$$0rd!',
+      Full_Name: student?.Full_Name,
+      Mobile: student?.Mobile,
+      dob: student?.dob,
+      role: student?.role?.id,
+      province: student?.province?.id || '',
+      district: student?.district?.id || '',
+      institution: student?.institution?.id || '',
     },
     validationSchema: Yup.object({
-      heading: Yup.string().required('Heading is required!'),
-      mainProfileURL: Yup.string().required('Main Profile URL is required!'),
-      pageMetaTitle: Yup.string().max(180, 'Atmost 180 characters can be used!'),
-      metaDescription: Yup.string().max(180, 'Atmost 180 characters can be used!'),
-      metaKeywords: Yup.string().max(180, 'Atmost 180 characters can be used!'),
+      Full_Name: Yup.string().required('Full name is required!'),
+      email: Yup.string().email().required('Email is requierd!'),
+      Mobile: Yup.string().optional().max(16, 'Atmost 16 number can be used!'),
     }),
-    onSubmit: (values) => {
-      patchSeoTemplate({
-        id: id as string,
-        values: {
-          pageType: values.pageType,
-          heading: values.heading,
-          url: values.mainProfileURL,
-          meta_description: values.metaDescription,
-          meta_title: values.pageMetaTitle,
-          meta_keywords: values.metaKeywords,
-        },
-      });
+    onSubmit: (values, { setErrors }) => {
+      patchStudent({ id: id || '', values: values as any });
     },
   });
 
   return (
     <main className="py-4 px-10">
-      <BlogsNavigation content={AddNewSEOBreadCrums(id || '')} />
-      <InnerPageHead heading={'SEO settings'} />
+      <BlogsNavigation content={EditStudentBreadCrums(id || '')} />
+      <InnerPageHead heading={'Edit student details'} />
       <form onSubmit={formik.handleSubmit} className="mt-10 max-w-[662px]">
-        <div className="flex flex-col gap-[6px] mb-6">
-          <label className="text-body3 text-neutral-900 opacity-70">Select a page type</label>
+        {/* <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Role</label>
           <ReactSelect
-            value={formik.values['pageType']}
-            onValueChange={(value) => formik.setFieldValue('pageType', value)}
-            onBlur={() => formik.setFieldTouched('pageType')}
-            options={pageTypeOption}
+            value={formik.values['role']}
+            onValueChange={(value) => formik.setFieldValue('role', value)}
+            onBlur={() => formik.setFieldTouched('role')}
+            options={roleOptions}
             downArrow={true}
             isSearchable={false}
-            error={formik.touched['pageType'] ? (formik.errors['pageType'] as string) : undefined}
+            errorToolTip={formik.touched['role']}
+            error={formik.touched['role'] ? (formik.errors['role'] as string) : undefined}
           />
-        </div>
+        </div> */}
+
         <InputSection
-          label={'Heading'}
+          label={'Email'}
           labelClass="text-body3 text-neutral-900 opacity-70"
           containerClass="flex flex-col gap-[6px]"
-          value={formik.values['heading']}
+          value={formik.values['email']}
+          type="email"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          name="heading"
+          name="email"
+          status={formik.touched['email']}
+          error={formik.touched['email'] ? formik.errors['email'] : undefined}
+          bottomError={false}
         />
+
         <InputSection
-          label={'Main profile URL'}
+          label={'Username'}
           labelClass="text-body3 text-neutral-900 opacity-70"
           containerClass="flex flex-col gap-[6px] mt-8"
-          value={formik.values['mainProfileURL']}
+          value={formik.values['username']}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          name="mainProfileURL"
+          name="username"
+          status={formik.touched['username']}
+          error={formik.touched['username'] ? formik.errors['username'] : undefined}
+          bottomError={false}
         />
-        <div className="w-full border-b border-neutral-300 mt-8" />
-        <div className="mt-8 flex flex-col gap-[6px]">
-          <label className="text-body3 text-neutral-900 opacity-70">Page meta title</label>
-          <textarea
-            value={formik.values['pageMetaTitle']}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="min-h-[120px] resize-none border border-bullet rounded text-bodysmall text-neutral-900 px-4 py-[10px]"
-            name="pageMetaTitle"
-            maxLength={150}
+
+        <InputSection
+          label={'Full Name'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['Full_Name']}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="Full_Name"
+          status={formik.touched['Full_Name']}
+          error={formik.touched['Full_Name'] ? formik.errors['Full_Name'] : undefined}
+          bottomError={false}
+        />
+
+        {/* <InputSection
+          label={'Password'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['password']}
+          type="password"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="password"
+        /> */}
+
+        <div className="w-full border-b border-neutral-300 my-8" />
+
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Province</label>
+          <ReactSelect
+            value={formik.values['province']}
+            onValueChange={(value) => formik.setFieldValue('province', value)}
+            onBlur={() => formik.setFieldTouched('province')}
+            options={provinceOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['province']}
+            error={formik.touched['province'] ? (formik.errors['province'] as string) : undefined}
           />
-          <div className="flex items-center justify-between">
-            <p className="text-caption text-neutral-800 opacity-70">
-              Page title helps to identify/indicate the subject of a webpage
-            </p>
-            <p className="text-caption text-neutral-800 opacity-70">
-              <span className={clsx(formik.errors['pageMetaTitle'] ? 'text-error' : 'text-neutral-900')}>
-                {formik.values['pageMetaTitle'].length}
-              </span>
-              /150 characters
-            </p>
-          </div>
         </div>
-        <div className="mt-8 flex flex-col gap-[6px]">
-          <label className="text-body3 text-neutral-900 opacity-70">Meta description</label>
-          <textarea
-            value={formik.values['metaDescription']}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="min-h-[120px] resize-none border border-bullet rounded text-bodysmall text-neutral-900 px-4 py-[10px]"
-            name="metaDescription"
-            maxLength={150}
+
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a District</label>
+          <ReactSelect
+            value={formik.values['district']}
+            onValueChange={(value) => formik.setFieldValue('district', value)}
+            onBlur={() => formik.setFieldTouched('district')}
+            options={districtOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['district']}
+            error={formik.touched['district'] ? (formik.errors['district'] as string) : undefined}
           />
-          <div className="flex items-center justify-between">
-            <p className="text-caption text-neutral-800 opacity-70">
-              Page title helps to identify/indicate the subject of a webpage
-            </p>
-            <p className="text-caption text-neutral-800 opacity-70">
-              <span className={clsx(formik.errors['metaDescription'] ? 'text-error' : 'text-neutral-900')}>
-                {formik.values['metaDescription'].length}
-              </span>
-              /150 characters
-            </p>
-          </div>
         </div>
-        <div className="mt-8 flex flex-col gap-[6px]">
-          <label className="text-body3 text-neutral-900 opacity-70">Meta keywords</label>
-          <textarea
-            value={formik.values['metaKeywords']}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="min-h-[120px] resize-none border border-bullet rounded text-bodysmall text-neutral-900 px-4 py-[10px]"
-            name="metaKeywords"
-            maxLength={150}
+
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Institution</label>
+          <ReactSelect
+            value={formik.values['institution']}
+            onValueChange={(value) => formik.setFieldValue('institution', value)}
+            onBlur={() => formik.setFieldTouched('institution')}
+            options={institutionOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['institution']}
+            error={formik.touched['institution'] ? (formik.errors['institution'] as string) : undefined}
           />
-          <div className="flex items-center justify-between">
-            <p className="text-caption text-neutral-800 opacity-70">
-              Meta keywords tells about the topic of the particular page
-            </p>
-            <p className="text-caption text-neutral-800 opacity-70">
-              <span className={clsx(formik.errors['metaKeywords'] ? 'text-error' : 'text-neutral-900')}>
-                {formik.values['metaKeywords'].length}
-              </span>
-              /150 characters
-            </p>
-          </div>
         </div>
+
+        <InputSection
+          label={'DOB'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['dob']}
+          type="date"
+          status={formik.touched['dob']}
+          error={formik.touched['dob'] ? formik.errors['dob'] : undefined}
+          bottomError={false}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          name="dob"
+        />
+
+        <InputSection
+          label={'Mobile'}
+          labelClass="text-body3 text-neutral-900 opacity-70"
+          containerClass="flex flex-col gap-[6px] mt-8"
+          value={formik.values['Mobile']}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          status={formik.touched['Mobile']}
+          error={formik.touched['Mobile'] ? formik.errors['Mobile'] : undefined}
+          bottomError={false}
+          name="Mobile"
+        />
+
         <div className="flex gap-4 mt-10">
           <Button type="button" onClick={() => navigate(-1)} btnType={EButtonType.outline}>
             Cancel
@@ -170,4 +217,4 @@ const EditSEO = () => {
   );
 };
 
-export default EditSEO;
+export default EditNewStudent;

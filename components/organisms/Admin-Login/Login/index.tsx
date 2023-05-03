@@ -19,6 +19,7 @@ import removeFromLocalStorage from '@particles/helper/removeFromLocal';
 
 import { Response } from '@particles/responseInterface/main';
 import adminLoginCSS from '@particles/css/adminLogin.module.css';
+import { useUserContext } from '../../../context/userContext';
 
 /**
  * It's a login form that uses Formik and Yup for validation
@@ -26,6 +27,7 @@ import adminLoginCSS from '@particles/css/adminLogin.module.css';
  */
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const { setUser } = useUserContext();
 
   const { uploadData, result, error } = useLoginHooks();
 
@@ -40,6 +42,7 @@ const LoginForm: React.FC = () => {
     }),
     onSubmit: async (value) => {
       await uploadData(value, 'ADMIN_PORTAL');
+      setUser(value);
     },
   });
 
@@ -48,8 +51,15 @@ const LoginForm: React.FC = () => {
       if (getFromLocalStorage('accessToken')) {
         removeFromLocalStorage('accessToken');
       }
+      if (getFromLocalStorage('refreshToken')) {
+        removeFromLocalStorage('refreshToken');
+      }
 
       saveToLocalStorage('accessToken', result.data.data?.token);
+      saveToLocalStorage('refreshToken', result?.data?.data?.token);
+      console.log(result?.data?.data?.user);
+
+      if (setUser) setUser(result?.data?.data?.user);
 
       navigate('/dashboard/');
     }
