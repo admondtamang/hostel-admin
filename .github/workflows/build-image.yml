@@ -1,0 +1,51 @@
+name: Build and Publish Image
+on:
+  push:
+    branches:
+      - main
+    tags: [ 'v*.*.*' ]
+env:
+  CONTEXT_PATH: .
+  DOCKER_PATH: ./Dockerfile
+  DOCKER_REGISTRY: registry.digitalocean.com
+  DOCKER_REPO: webpoint
+  IMAGE_NAME: talentpoint-be
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            "${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}"
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value={{branch}}-sha-{{sha}}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+        
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ${{ env.CONTEXT_PATH }}
+          file: ${{ env.DOCKER_PATH }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: prod

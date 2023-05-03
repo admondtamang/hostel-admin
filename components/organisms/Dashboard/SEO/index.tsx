@@ -6,7 +6,7 @@ import FetchWrapper from '@molecules/FetchWrapper';
 import TableFooter from '../TableContent/TableFooter';
 import TableContentBody from '../TableContent/TableContentBody';
 
-import useFetchSeo from '@particles/hooks/dashboard/seo/useFetchSeo';
+import useFetchStudents from '@particles/hooks/dashboard/student/useFetchStudents';
 import { formatBlogsContent, SEOHeading, SEOContent, navigateContent } from './const';
 
 import { TableControlType } from '../TableContent/TableContentBody/content.interface';
@@ -19,15 +19,15 @@ const SEO: React.FC = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = React.useState(false);
 
-  const { data: seoList, isLoading, isError } = useFetchSeo();
+  const { data: studentsList, isLoading, isError } = useFetchStudents();
   const { mutate: deleteSeo } = useMutationDeleteSeoTemplate();
-  const content = formatBlogsContent(seoList?.data, deleteSeo, isLoading);
+  const content = formatBlogsContent(studentsList?.results || [], deleteSeo, isLoading);
 
   return (
     <main className="px-10 py-[38px]">
       <div className="mt-10">
         <BlogsHeadAddNew
-          heading="Seo"
+          heading="Students"
           buttonPlaceholder="Add New"
           onClick={() => navigate('/dashboard/seo/add-new-seo/')}
         />
@@ -35,19 +35,19 @@ const SEO: React.FC = () => {
       <div className="mt-6">
         <TableContainer>
           <TableHeadContent content={navigateContent} setFilter={setFilter} inputPlaceholder="Search Users" />
-          {/* <FetchWrapper isError={isError} isLoading={isLoading} totalData={seoList?.totalData}> */}
-          <div className="mt-2">
-            <TableContentBody
-              heading={SEOHeading}
-              includeId={false}
-              content={SEOContent}
-              tableControlType={TableControlType.button}
-            />
-          </div>
-          <div className="py-8">
-            <TableFooter totalPage={seoList?.totalPage} />
-          </div>
-          {/* </FetchWrapper> */}
+          <FetchWrapper isError={isError} isLoading={isLoading} totalData={studentsList?.pagination.total}>
+            <div className="mt-2">
+              <TableContentBody
+                heading={SEOHeading}
+                includeId={false}
+                content={content}
+                tableControlType={TableControlType.button}
+              />
+            </div>
+            <div className="py-8">
+              <TableFooter totalPage={studentsList?.pagination.pageCount} />
+            </div>
+          </FetchWrapper>
         </TableContainer>
       </div>
     </main>

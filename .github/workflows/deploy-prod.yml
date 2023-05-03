@@ -1,0 +1,33 @@
+name: NEWSTART API Deployment
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    deploy:
+        name: TalentPoint api
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set Node.js 16
+              uses: actions/setup-node@v3
+              with:
+                  version: 16.x
+            - name: Install dependencies
+              run: npm install
+            - name: build app
+              run: yarn build
+            - name: Install SSH key
+              uses: shimataro/ssh-key-action@v2
+              with:
+                  key: ${{ secrets.SSH_KEY }}
+                  name: talentPoint.pem # optional
+                  known_hosts: ${{ secrets.KNOWN_HOSTS }}
+                  config: ${{ secrets.PROD_CONFIG }} # ssh_config; optional
+                  if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
+            - name: rsync over ssh
+              run: rsync -avP dist package.json package-lock.json talent-point-api:/data/talent-point-api
+            - name: updating new talent-point-api api version
+              run: ssh talent-point-api bash /data/deploy.sh

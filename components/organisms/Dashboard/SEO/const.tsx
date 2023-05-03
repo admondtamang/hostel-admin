@@ -3,6 +3,7 @@ import React from 'react';
 import TrashIcon from '@atoms/icons/Trash-Icon';
 import ModalDelete from '@molecules/ModalDelete';
 import PencilIcon from '@atoms/icons/Pencil-Icon';
+import { IStudentData } from '@particles/responseInterface/student/student.list.interface';
 
 export interface ISeoTemplate {
   _id: string;
@@ -14,7 +15,6 @@ export interface ISeoTemplate {
 }
 
 export const navigateContent = ['View All', 'Author', 'Admin'];
-
 export const pageType = [
   {
     value: 'Developers',
@@ -44,31 +44,27 @@ export const SEOType = [
     label: 'Employer',
   },
 ];
+export const SEOHeading = ['Full Name', 'Mobile', 'Location'];
 
-export const SEOHeading = ['Page Type Name', 'Heading', 'Meta Title', 'Permalink Structure'];
-
-export const formatBlogsContent = (data: ISeoTemplate[], deleteSeo: any, isLoading?: boolean) =>
+export const formatBlogsContent = (data: IStudentData[], deleteSeo: any, isLoading?: boolean) =>
   isLoading
     ? []
-    : data.map((row: ISeoTemplate, index) => [
+    : data.map((row, index) => [
         1,
-        <div key="pageTypeName-1 " className="flex flex-col max-w-[200px]">
-          <p className="text-tableContentHead text-neutral-900">Developers</p>
-          <p className="text-roleFont text-gray500">/developers</p>
-        </div>,
         <div key="heading-1" className="text-bodysmall text-neutral-700 max-w-[125px]">
-          {row.heading}
+          {row.Full_Name || ''}
         </div>,
         <div key="meta-title-1" className="text-bodysmall text-neutral-700 max-w-[320px]">
-          {row.meta_title}
+          {row.Mobile || '-'}
         </div>,
+
         <div key="permalink-structure-1" className="text-bodysmall text-neutral-700 max-w-[180px] break-words">
-          {row.url}
+          {row.province.Province + ' - ' + row.district?.District_name + ' - ' + row.institution.institution_name}
         </div>,
         [
           {
             icon: PencilIcon,
-            link: `/dashboard/seo/${row._id}`,
+            link: `/dashboard/seo/${row.id}`,
             params: [],
             view: true,
           },
@@ -82,9 +78,9 @@ export const formatBlogsContent = (data: ISeoTemplate[], deleteSeo: any, isLoadi
             Modal: (closeModal: React.Dispatch<React.SetStateAction<boolean>>) => {
               return (
                 <ModalDelete
-                  name={row.heading}
+                  name={row.Full_Name || ''}
                   deleteFunction={() => {
-                    deleteSeo(row._id);
+                    deleteSeo(row.id);
                   }}
                   closeModal={closeModal}
                 />

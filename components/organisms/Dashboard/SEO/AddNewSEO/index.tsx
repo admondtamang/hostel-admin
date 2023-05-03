@@ -39,16 +39,16 @@ const AddNewSEO = () => {
     initialValues: {
       confirmed: false,
       blocked: true,
-      email: 'moqyp@mailinator.com',
-      username: 'dutenevewe',
+      email: '',
+      username: '',
       password: 'Pa$$0rd!',
-      Full_Name: 'Hayfa',
+      Full_Name: '',
       Mobile: undefined,
       dob: '2023-05-10',
       role: 2,
-      province: 1,
-      institution: 1,
-      district: 1,
+      province: 2,
+      district: 5,
+      institution: 0,
     },
     validationSchema: Yup.object({
       Full_Name: Yup.string().required('Full name is required!'),
@@ -69,7 +69,7 @@ const AddNewSEO = () => {
   return (
     <main className="py-4 px-10">
       <BlogsNavigation content={AddNewSEOBreadCrums} />
-      <InnerPageHead heading={'Student details'} />
+      <InnerPageHead heading={'Add student details'} />
       <form onSubmit={formik.handleSubmit} className="mt-10 max-w-[662px]">
         {/* <div className="flex flex-col gap-[6px] mb-6">
           <label className="text-body3 text-neutral-900 opacity-70">Select a Role</label>
@@ -116,7 +116,7 @@ const AddNewSEO = () => {
           name="full_Name"
         />
 
-        <InputSection
+        {/* <InputSection
           label={'Password'}
           labelClass="text-body3 text-neutral-900 opacity-70"
           containerClass="flex flex-col gap-[6px] mt-8"
@@ -125,7 +125,7 @@ const AddNewSEO = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           name="password"
-        />
+        /> */}
 
         <div className="w-full border-b border-neutral-300 my-8" />
 
@@ -144,20 +144,6 @@ const AddNewSEO = () => {
         </div>
 
         <div className="flex flex-col gap-[6px] mb-6">
-          <label className="text-body3 text-neutral-900 opacity-70">Select a Institution</label>
-          <ReactSelect
-            value={formik.values['institution']}
-            onValueChange={(value) => formik.setFieldValue('institution', value)}
-            onBlur={() => formik.setFieldTouched('institution')}
-            options={institutionOptions}
-            downArrow={true}
-            isSearchable={false}
-            errorToolTip={formik.touched['institution']}
-            error={formik.touched['institution'] ? (formik.errors['institution'] as string) : undefined}
-          />
-        </div>
-
-        <div className="flex flex-col gap-[6px] mb-6">
           <label className="text-body3 text-neutral-900 opacity-70">Select a District</label>
           <ReactSelect
             value={formik.values['district']}
@@ -171,11 +157,26 @@ const AddNewSEO = () => {
           />
         </div>
 
+        <div className="flex flex-col gap-[6px] mb-6">
+          <label className="text-body3 text-neutral-900 opacity-70">Select a Institution</label>
+          <ReactSelect
+            value={formik.values['institution']}
+            onValueChange={(value) => formik.setFieldValue('institution', value)}
+            onBlur={() => formik.setFieldTouched('institution')}
+            options={institutionOptions}
+            downArrow={true}
+            isSearchable={false}
+            errorToolTip={formik.touched['institution']}
+            error={formik.touched['institution'] ? (formik.errors['institution'] as string) : undefined}
+          />
+        </div>
+
         <InputSection
           label={'DOB'}
           labelClass="text-body3 text-neutral-900 opacity-70"
           containerClass="flex flex-col gap-[6px] mt-8"
           value={formik.values['dob']}
+          type="date"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           name="dob"
